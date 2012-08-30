@@ -1,0 +1,20 @@
+%html
+	%head
+		%script{:src => "http://0.0.0.0:3000/faye.js"}
+		%script{:src => "/js/pub_sub.js"}
+		:javascript
+			function say_hi() {
+				var text = document.getElementById('content_message').value;
+				var nick = document.getElementById('nickname').value;
+				client.publish('/messages', {
+					text: text, nickname: nick
+				});
+			}
+	%body
+		Nickname:
+		%input{:id => "nickname", :type => "text"}
+		%br
+		Send a message:
+		%input{:id => "content_message", :type => "text"}
+		%input{:type => "button", :onclick => "say_hi()", :value => "send"}
+		#messages
