@@ -1,3 +1,5 @@
+
+
 Simple Chat with Publish/Subscribe pattern with sinatra, haml and faye
 ======================================================================
 
