@@ -1,20 +1,54 @@
 %html
-	%head
-		%script{:src => "http://0.0.0.0:3000/faye.js"}
-		%script{:src => "/js/pub_sub.js"}
-		:javascript
-			function say_hi() {
-				var text = document.getElementById('content_message').value;
-				var nick = document.getElementById('nickname').value;
-				client.publish('/messages', {
-					text: text, nickname: nick
-				});
-			}
-	%body
-		Nickname:
-		%input{:id => "nickname", :type => "text"}
-		%br
-		Send a message:
-		%input{:id => "content_message", :type => "text"}
-		%input{:type => "button", :onclick => "say_hi()", :value => "send"}
-		#messages
+  %head
+    %title Simple Chat
+    :css 
+      body {
+        font-family: sans-serif;
+        font-size:13px;
+        padding: 3em;
+      }
+
+      h3 {
+        color: gray;
+      }
+
+      input {
+        background-color: #F4F4F4;
+        border: 2px solid #C7C7C7;
+        padding: .5em;
+      }
+
+      input:focus {
+        border: 2px solid gray;
+      }
+
+      hr {
+        height: 2px;
+        color: white;
+        background-color: gray;
+      }
+  %body
+    %h3 Simple Chat using Sinatra, Ruby and Faye
+    %p 
+      %label Nickname:
+      %input{:id => "nickname", :type => "text"}
+      %label Send a message:
+      %input{:id => "content_message", :type => "text"}
+      %input{:type => "button", :onclick => "say_hi()", :value => "send"}
+    %hr
+    #messages
+    %script{:src => "http://#{request.host}:#{request.port}/faye.js"}
+    :javascript
+      var client = new Faye.Client('http://#{request.host}:#{request.port}/faye')
+
+      client.subscribe('/messages', function(message) {
+        document.getElementById('messages').innerHTML += "<p>" + message.nickname + " : " + message.text + "</p>";
+      });
+
+      function say_hi() {
+        var text = document.getElementById('content_message').value;
+        var nick = document.getElementById('nickname').value;
+        client.publish('/messages', {
+          text: text, nickname: nick
+        });
+      }

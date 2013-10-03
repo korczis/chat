@@ -1,10 +1,11 @@
 # config.ru
-require 'faye'
-require 'sinatra'
-require 'haml'
-require './app'
+%w{
+  faye
+  sinatra
+  haml
+  ./app
+}.each { |r| require r }
 
-use Faye::RackAdapter, :mount      => '/faye',
-                       :timeout    => 25
+use Faye::RackAdapter, :mount => '/faye', :timeout    => 25
 
 run Sinatra::Application
